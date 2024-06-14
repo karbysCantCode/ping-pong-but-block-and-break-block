@@ -6,7 +6,6 @@
 
 #define concat(first, second) first second
 
-
 struct K_RGBA {
     uint8_t r;
     uint8_t g;
@@ -161,7 +160,11 @@ public:
 
 
 
-    void KBF_RenderLetter(SDL_Renderer* renderer, char character, int x, int y, int scale) {
+    void KBF_RenderLetter(SDL_Renderer* renderer,
+                            char character,
+                            int x,
+                            int y,
+                            int scale) {
         //if (color.r != 0 || color.b != 0 || color.g != 0) {
 
         //} incomplete implementation for colored fonts
@@ -170,15 +173,26 @@ public:
 
     }
 
-    void KBF_RenderStringToFit(SDL_Renderer* renderer, std::string string, int x, int y, int xFit, int yFit) {
-        int scale = mathMinInt(xFit / fontX, yFit / fontY);
-        //std::cout << yFit / fontY << '\n';
+    void KBF_RenderStringToFit(SDL_Renderer* renderer,
+                                std::string string,
+                                int x,
+                                int y,
+                                int xFit,
+                                int yFit) {
+
+        const int scale = mathMinInt(xFit / (fontX*string.length()), yFit / fontY);
+
         KBF_RenderString(renderer, string, x, y, scale);
     }
 
-    void KBF_RenderString(SDL_Renderer* renderer, std::string string, int x, int y, int scale) {
+    void KBF_RenderString(SDL_Renderer* renderer,
+                            std::string string,
+                            int x,
+                            int y,
+                            int scale) {
+
         for (int i = 0; i < string.length(); ++i) {
-            KBF_RenderLetter(renderer, string[i], x + (5 * i) * scale, y, scale);
+            KBF_RenderLetter(renderer, string[i], x + ((fontX / 4 + fontX) * i) * scale, y, scale);
         }
     }
 };

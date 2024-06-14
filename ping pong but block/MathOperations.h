@@ -65,3 +65,13 @@ int findHCF(int a, int b) {
     }
     return a;
 }
+
+
+std::string abbreviateNumber(const int number) {
+    if (number < 1000) return std::to_string(number);
+    if (number >= 1000 && number < 1000000) return std::to_string(number / 1000) + 'K';
+    if (number >= 1000000 && number < 1000000000) return std::to_string(number / 1000000) + 'M';
+    if (number >= 1000000000 && number < 1000000000000) return std::to_string(number / 1000000000) + 'B';
+    if (number >= 1000000000000 && number < 1000000000000000) return std::to_string(number / 1000000000000) + 'T';
+    return std::to_string(number);
+}

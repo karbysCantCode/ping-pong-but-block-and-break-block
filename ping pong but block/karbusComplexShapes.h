@@ -77,45 +77,60 @@ public:
 	}
 };
 
-void KCS_RenderRectInsetBorder(SDL_Renderer* renderer, int x, int y, int width, int height, int inset,KCS_Color *borderColor, KCS_Color* fillColor) {
+void KCS_RenderRectInsetBorder(SDL_Renderer* renderer,
+							   int f_x,
+							   int f_y,
+							   int f_width,
+							   int f_height,
+							   int f_inset,
+							   KCS_Color * f_borderColor,
+							   KCS_Color* f_fillColor) {
 	SDL_Rect border;
-	border.x = x;
-	border.y = y;
-	border.w = width;
-	border.h = height;
+	border.x = f_x;
+	border.y = f_y;
+	border.w = f_width;
+	border.h = f_height;
 
-	SDL_SetRenderDrawColor(renderer, borderColor->r, borderColor->g, borderColor->b, borderColor->a);
+	SDL_SetRenderDrawColor(renderer, f_borderColor->r, f_borderColor->g, f_borderColor->b, f_borderColor->a);
 	SDL_RenderFillRect(renderer, &border);
 
 	SDL_Rect main;
-	main.w = width - (inset * 2);
-	main.h = height - (inset * 2);
-	main.x = x+inset;
-	main.y = y+inset;
+	main.w = f_width - (f_inset * 2);
+	main.h = f_height - (f_inset * 2);
+	main.x = f_x + f_inset;
+	main.y = f_y + f_inset;
 
-	SDL_SetRenderDrawColor(renderer, fillColor->r, fillColor->g, fillColor->b, fillColor->a);
+	SDL_SetRenderDrawColor(renderer, f_fillColor->r, f_fillColor->g, f_fillColor->b, f_fillColor->a);
 	SDL_RenderFillRect(renderer, &main);
 	
 }
 
-void KCS_SurfaceRectInsetBorder(SDL_Surface* surface, int x, int y, int width, int height, int inset, KCS_Color& borderColor, KCS_Color& fillColor) {
+void KCS_SurfaceRectInsetBorder(SDL_Surface* surface,
+								int f_x,
+								int f_y,
+								int f_width,
+								int f_height,
+								int f_inset,
+								KCS_Color& f_borderColor,
+								KCS_Color& f_fillColor) {
 	SDL_Rect border;
-	border.x = x;
-	border.y = y;
-	border.w = width;
-	border.h = height;
+	border.x = f_x;
+	border.y = f_y;
+	border.w = f_width;
+	border.h = f_height;
 
-	SDL_FillRect(surface, &border, SDL_MapRGBA(surface->format, borderColor.r, borderColor.g, borderColor.b, borderColor.a));
+	SDL_FillRect(surface, &border, SDL_MapRGBA(surface->format, f_borderColor.r, f_borderColor.g, f_borderColor.b, f_borderColor.a));
 
 	SDL_Rect main;
-	main.w = width - (inset * 2);
-	main.h = height - (inset * 2);
-	main.x = x + inset;
-	main.y = y + inset;
+	main.w = f_width - (f_inset * 2);
+	main.h = f_height - (f_inset * 2);
+	main.x = f_x + f_inset;
+	main.y = f_y + f_inset;
 
-	SDL_FillRect(surface, &main, SDL_MapRGBA(surface->format, fillColor.r, fillColor.g, fillColor.b, fillColor.a));
+	SDL_FillRect(surface, &main, SDL_MapRGBA(surface->format, f_fillColor.r, f_fillColor.g, f_fillColor.b, f_fillColor.a));
 
 }
+
 /*Parameters:
 	SDL_Renderer* = ptr to renderer
 	portions = how smooth graident
@@ -124,7 +139,13 @@ void KCS_SurfaceRectInsetBorder(SDL_Surface* surface, int x, int y, int width, i
 	yRes = res of y
 	startcolor = color to start
 	endcolor = color to end*/
-void KCS_BackgroundGradient(SDL_Renderer* renderer, int portions, bool direction, int xRes,int yRes, KCS_Color* startColor, KCS_Color* endColor) {
+void KCS_BackgroundGradient(SDL_Renderer* renderer,
+							int portions,
+							bool direction,
+							int xRes,
+							int yRes,
+							KCS_Color* startColor,
+							KCS_Color* endColor) {
 
 	SDL_SetRenderDrawColor(renderer, endColor->r, endColor->g, endColor->b, endColor->a);
 	SDL_RenderClear(renderer);
@@ -144,6 +165,7 @@ void KCS_BackgroundGradient(SDL_Renderer* renderer, int portions, bool direction
 
 		int remainder = yRes % portions;
 		int portionSize = yRes / portions;
+
 		if (!(remainder == 0)) portions += (yRes - (portions * portionSize)) / portionSize+1;
 
 		//std::cout << portions;

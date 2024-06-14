@@ -44,7 +44,7 @@ int startGame(int screenX, int screenY, int gameX, int gameY, int secondsBetween
 	}
 
 	// create objects for game
-	SDL_Color fontColor = { 0,0,255,255 };
+	SDL_Color fontColor = { 0,0,0,255 };
 	KBF_Font defaultFont(renderer, fontColor, "default");
 
 	balls ballManager(renderer, gameX,gameY);
@@ -63,7 +63,7 @@ int startGame(int screenX, int screenY, int gameX, int gameY, int secondsBetween
 	bool quit = false;
 	SDL_Event evt;
 
-	const int ticksPerSecond = 120;
+	const int ticksPerSecond = 60;
 
 	int ticksSinceLastGenerate = 0;
 	const int ticksBetweenGenerates = secondsBetweenGenerates * ticksPerSecond;
