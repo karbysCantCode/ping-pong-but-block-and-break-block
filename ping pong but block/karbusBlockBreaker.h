@@ -1,4 +1,4 @@
-#pragma once
+	#pragma once
 #include <iostream>
 #include <filesystem>
 #include <random>
@@ -12,6 +12,8 @@
 #include "KBalls.h"
 #include "cellManager.h"
 
+SDL_Texture* backgroundGradientTexture = nullptr;
+
 void renderTPS(SDL_Renderer* renderer, KBF_Font& font, int diff, int x, int y) {
 	std::string stringOut = "TPS:" + std::to_string(diff);
 	font.KBF_RenderString(renderer, stringOut, x, y, 3);
@@ -21,10 +23,16 @@ void renderGameData(SDL_Renderer* renderer, KBF_Font& font, int x, int y) {
 
 }
 
+void createBGTexture(SDL_Renderer* renderer, int f_currentX, int f_currentY) {
+	KCS_Color mainColor = { 0,0,0,255 };
+	KCS_Color endColor = { 150,150,150,255 };
+	backgroundGradientTexture = KCS_BackgroundGradient(renderer, 100, 1, f_currentX, f_currentY, &mainColor, &endColor);
+}
+
 int updateFrame(SDL_Renderer* renderer, balls& ballManager, cells& cellManager,KBF_Font& font, int screenX, int screenY) {
 
 	cellManager.renderCells(renderer, font);
-	ballManager.processBalls(renderer, cellManager);
+	ballManager.processBalls(renderer, cellManager, cellManager.currentScreenX, cellManager.currentScreenY);
 	return 0;
 }
 
@@ -63,6 +71,9 @@ int startGame(int screenX, int screenY, int gameX, int gameY, int secondsBetween
 	bool quit = false;
 	SDL_Event evt;
 
+	SDL_Rect backgroundRect = { 0,0,gameX,gameY };
+	createBGTexture(renderer, gameX, gameY);
+
 	const int ticksPerSecond = 60;
 
 	int ticksSinceLastGenerate = 0;
@@ -93,6 +104,7 @@ int startGame(int screenX, int screenY, int gameX, int gameY, int secondsBetween
 			lastTick = currentTick;
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 			SDL_RenderClear(renderer);
+			SDL_RenderCopy(renderer, backgroundGradientTexture, nullptr, &backgroundRect);
 
 			if (ticksSinceLastGenerate >= ticksBetweenGenerates) {
 				ticksSinceLastGenerate = 0;
@@ -101,6 +113,8 @@ int startGame(int screenX, int screenY, int gameX, int gameY, int secondsBetween
 			if (ticksSinceLastExpand >= ticksBetweenExpand) {
 				ticksSinceLastExpand = 0;
 				cellManager.expandTotalCells();
+				backgroundRect.w = cellManager.currentScreenX;
+				backgroundRect.h = cellManager.currentScreenY;
 			}
 			
 			renderTPS(renderer, defaultFont, diff, screenX - 100, 5);

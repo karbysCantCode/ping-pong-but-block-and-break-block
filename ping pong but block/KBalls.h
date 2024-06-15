@@ -21,11 +21,11 @@ private:
 
     float positionToEscapeSide(float position, bool isX) {
         if (isX) {
-            if (position >= screenX-10) return static_cast<float>(screenX - circleRadiusInPixels);
+            if (position >= m_screenX -10) return static_cast<float>(m_screenX - circleRadiusInPixels);
             return static_cast<float>(circleRadiusInPixels);
         }
         else {
-            if (position >= screenY-10) return static_cast<float>(screenY - circleRadiusInPixels);
+            if (position >= m_screenY -10) return static_cast<float>(m_screenY - circleRadiusInPixels);
             return static_cast<float>(circleRadiusInPixels);
         }
     }
@@ -35,15 +35,17 @@ private:
     const int circleRadiusInPixels = 6;
 
     int totalGlitches = 0;
-    int screenX;
-    int screenY;
+    int m_screenX;
+    int m_screenY;
 
 public:
+    int ballCount = 0;
+    int ballSpeed = 1;
     int ballDamage = 1;
 
     balls(SDL_Renderer* renderer, int scrnX, int scrnY) {
-        screenX = scrnX;
-        screenY = scrnY;    
+        m_screenX = scrnX;
+        m_screenY = scrnY;
         
         SDL_Surface* surface = SDL_CreateRGBSurface(0, circleRadiusInPixels * 2, circleRadiusInPixels * 2, 32, 0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF);
         Uint32* pixels = (Uint32*)surface->pixels; // Get the pixel array
@@ -51,7 +53,7 @@ public:
         for (int y = -circleRadiusInPixels; y <= circleRadiusInPixels; ++y) {
             for (int x = -circleRadiusInPixels; x <= circleRadiusInPixels; ++x) {
                 if (x * x + y * y <= circleRadiusInPixels * circleRadiusInPixels) { // Check if the point is inside the circle
-                    pixels[((y + circleRadiusInPixels) * surface->w) + (x + circleRadiusInPixels)] = 0x000000FF; // Set the pixel color
+                    pixels[((y + circleRadiusInPixels) * surface->w) + (x + circleRadiusInPixels)] = 0xFFFFFFFF; // Set the pixel color
                 }
             }
         }
@@ -62,11 +64,11 @@ public:
     void createBall() {
 
         ballStruct newBall;
-        newBall.position.x = static_cast<float>(screenX / 2);
-        newBall.position.y = static_cast<float>(screenY / 2);//screenY - (screenY / 10);
+        newBall.position.x = static_cast<float>(m_screenX / 2);
+        newBall.position.y = static_cast<float>(m_screenY / 2);//screenY - (screenY / 10);
 
-        newBall.velocity.x = randomFloat(-10, 10);
-        newBall.velocity.y = randomFloat(-10, 10);
+        newBall.velocity.x = randomFloat(-(ballSpeed/2), ballSpeed / 2);
+        newBall.velocity.y = // hjeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeereeeeeeeeeeeeeeeeeeeeeeee Q^&$()&R*%^@#)(r&^y ()&wertvg(&wegf)(&
 
         ballArray.push_back(newBall);
     }
@@ -79,17 +81,19 @@ public:
     }
 
     void checkBoundaryCollision(ballStruct& currentBall) {
-        if (currentBall.position.x - circleRadiusInPixels < 0 || currentBall.position.x + circleRadiusInPixels >= screenX) {
+        if (currentBall.position.x - circleRadiusInPixels < 0 || currentBall.position.x + circleRadiusInPixels >= m_screenX) {
             currentBall.velocity.x = -currentBall.velocity.x;
             currentBall.position.x = positionToEscapeSide(currentBall.position.x, 1);
         }
-        if (currentBall.position.y - circleRadiusInPixels < 0 || currentBall.position.y + circleRadiusInPixels >= screenY) {
+        if (currentBall.position.y - circleRadiusInPixels < 0 || currentBall.position.y + circleRadiusInPixels >= m_screenY) {
             currentBall.velocity.y = -currentBall.velocity.y;
             currentBall.position.y = positionToEscapeSide(currentBall.position.y, 0);
         }
     }
     
-    void processBalls(SDL_Renderer* renderer, cells& cellManager) {
+    void processBalls(SDL_Renderer* renderer, cells& cellManager, int f_currentScreenX, int f_currentScreenY) {
+        m_screenX = f_currentScreenX;
+        m_screenY = f_currentScreenY;
         const int f_singleCellX = cellManager.singleCellX;
         const int f_singleCellY = cellManager.singleCellY;
         const int f_cellsAlongX = cellManager.cellsAlongX;

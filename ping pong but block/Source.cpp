@@ -7,6 +7,6 @@
 #include <cmath>
 
 int main(int argc, char* argv[]) {
-    startGame(700,1000,600,800, 5,10);
+    startGame(800,1000,600,800, 5,10);
     return 0;
 }

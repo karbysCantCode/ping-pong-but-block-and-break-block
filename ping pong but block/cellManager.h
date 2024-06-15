@@ -29,6 +29,7 @@ struct singleCell {
 	int cellX = 0;
 	int cellY = 0;
 	int cellHealth = 0;
+	int cellTypeValue = 0;
 	CellType cellType = CELL_NONE;
 };
 
@@ -38,8 +39,6 @@ private:
 	int averageHealth = 700;
 	int m_scrnX;
 	int m_scrnY;
-	int currentScreenX;
-	int currentScreenY;
 
 	SDL_Texture* cellTextures[CELL_COUNT] = { nullptr };
 
@@ -78,6 +77,9 @@ public:
 
 	int singleCellX;
 	int singleCellY;
+	
+	int currentScreenX;
+	int currentScreenY;
 
 	cells(SDL_Renderer* renderer,
 			int health,
@@ -159,14 +161,20 @@ public:
 
 		allCells.resize(cellsAlongX * cellsAlongY);
 		allCells = std::move(newCells);
+		currentScreenX = cellsAlongX * singleCellX;
+		currentScreenY = cellsAlongY * singleCellY;
+		
 	}
 
 	bool createCell(int f_x,
 					int f_y,
 					int f_health,
 					CellType f_cellType) {
-
-		singleCell newCell = { f_x,f_y,f_health,f_cellType };
+		int cellValue = 0;
+		if (f_cellType != CELL_NONE) {
+			cellValue = randomInt(1, 3);
+		}
+		singleCell newCell = { f_x,f_y,f_health,cellValue,f_cellType };
 		allCells[f_y * cellsAlongY + f_x] = newCell;
 		return 1;
 	}
@@ -174,6 +182,7 @@ public:
 	  0 = sucess
 	*/
 	int generateRow() {
+		std::cout << currentScreenX << "," << currentScreenY << '\n';
 		for (int x = 0; x < cellsAlongX; ++x) {
 			//std::cout << x << '\n';
 			if (allCells[(cellsAlongY - 1) * cellsAlongX + x].cellHealth != 0) {

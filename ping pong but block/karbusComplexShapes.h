@@ -139,7 +139,7 @@ void KCS_SurfaceRectInsetBorder(SDL_Surface* surface,
 	yRes = res of y
 	startcolor = color to start
 	endcolor = color to end*/
-void KCS_BackgroundGradient(SDL_Renderer* renderer,
+SDL_Texture* KCS_BackgroundGradient(SDL_Renderer* renderer,
 							int portions,
 							bool direction,
 							int xRes,
@@ -147,8 +147,11 @@ void KCS_BackgroundGradient(SDL_Renderer* renderer,
 							KCS_Color* startColor,
 							KCS_Color* endColor) {
 
+	SDL_Texture* newTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, xRes, yRes);
+
+	SDL_SetRenderTarget(renderer, newTexture);
+
 	SDL_SetRenderDrawColor(renderer, endColor->r, endColor->g, endColor->b, endColor->a);
-	SDL_RenderClear(renderer);
 
 	if (direction) {
 		/*
@@ -192,5 +195,6 @@ void KCS_BackgroundGradient(SDL_Renderer* renderer,
 		}
 
 	}
-
+	SDL_SetRenderTarget(renderer, nullptr);
+	return newTexture;
 }
